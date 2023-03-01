@@ -6,7 +6,7 @@ Currently, the script runs 20 trials and outputs the results into a textfile ```
 
 Run the following script to get the output: 
 
-```python3 ./CAscript.py > ../Results/20trial_output.txt```
+```python3 ./CA_script.py > ../Results/20trial_output.txt```
 
 
 
