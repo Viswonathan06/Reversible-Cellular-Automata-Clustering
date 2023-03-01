@@ -207,6 +207,8 @@ def cellular_automata_clustering(split, rule_list, encoding, window_size = 5):
     # rule_set=[[1511938590,2218767375],[2276755335,1259293455],[2276755215,255652080]]
     #rule_set=[[1511938590,2218767375]]
     # rule_set=[267390795,267416079]
+    # rule_set=[4030467855,764269197]
+    # rule_set=[3538955760,2076199695]
     # rule_set=[256577355,259190799]
     print(rule_set)
     enc1 = copy.deepcopy(encoding)
@@ -380,7 +382,7 @@ def cellular_automata_clustering(split, rule_list, encoding, window_size = 5):
     print("after: ",q)
 
     print(t1)
-    print("---------------------***-----------------******----------------------***--------------------")
+    print("---------------------***-----------------******----------------------***--------------------" + "\n")
 
   return best_rule, best_CA_sill, better_score_list
 
