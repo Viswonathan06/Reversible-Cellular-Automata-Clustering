@@ -197,7 +197,7 @@ def cellular_automata_clustering(split, rule_list, encoding, window_size = 5):
   best_CA_sill = -10000
   best_rule = []
   
-  for rules in range(5):
+  for rules in range(20):
     tmc=[]
     tma=[]
     print("Trial number :", rules)
