@@ -2,10 +2,11 @@
 import pandas as pd
 import numpy as np
 from pandas import DataFrame as df 
-import math
+import math, sys
 import random as rand
-
-
+from itertools import combinations
+import pickle as pkl
+import threading 
 from sklearn.metrics import silhouette_score,calinski_harabasz_score,davies_bouldin_score
 from sklearn.cluster import KMeans
 from sklearn import metrics         
@@ -191,23 +192,26 @@ def apply_rule(a1,winsize,brule):
   return final_array
 
 # %%
-def cellular_automata_clustering(split, rule_list, encoding, window_size = 5):
+def cellular_automata_clustering(split, rules_comb, encoding, thread_no, trials=-1, window_size = 5):
 
   better_score_list = []
   best_CA_sill = -10000
   best_rule = []
-  
-  for rules in range(20):
+  output_data = []
+  columns = ["Rule 1", "Rule 2", "Initial clusters", "CA Silhoutte","Kmeans Silhoutte", "New Clusters","New CA Silhoutte","New Kmeans Silhoutte"]
+  print(len(rules_comb))
+  if trials == -1:
+    trials = len(rules_comb)
+  trial=0
+  for rule_set in rules_comb:
     tmc=[]
     tma=[]
-    print("Trial number :", rules)
-    rule_set=random.sample(rule_list,2)
-    #Clustering, checking scores 252702960
-    #rule_set=[252691440,2218767375]
-    # rule_set=[[1511938590,2218767375],[2276755335,1259293455],[2276755215,255652080]]
-    #rule_set=[[1511938590,2218767375]]
-    # rule_set=[267390795,267416079]
-    # rule_set=[256577355,259190799]
+    print("Trial number :", trial)
+    trial = trial+1
+    
+    if trial == trials:
+      break
+    
     print(rule_set)
     enc1 = copy.deepcopy(encoding)
     for p in range(int(len(rule_set)/2)):
@@ -367,8 +371,11 @@ def cellular_automata_clustering(split, rule_list, encoding, window_size = 5):
 
 
     my_data=[[len(fa),tma[0][0],tma[0][1],CA_sill_new,Kmeans_sill_new]]
-
     head=["Initial no.of clusters", "Silhoutte score for our algo","silhoutte score for kmeans"," new silhoutte score","new silhoute for kmeans"]
+    
+
+    # Add rto output data
+    output_data.append([rule_set[0],rule_set[1],len(fa),tma[0][0],tma[0][1],len(t1),CA_sill_new,Kmeans_sill_new]) 
     print(tabulate(my_data, headers=head, tablefmt="grid"))
     p=[]
     for i in fa:
@@ -381,13 +388,36 @@ def cellular_automata_clustering(split, rule_list, encoding, window_size = 5):
 
     print(t1)
     print("---------------------***-----------------******----------------------***--------------------")
-
+  len(output_data)
+  out_df = pd.DataFrame(data=output_data, columns=columns)
+  print(out_df.head())
+  out_df.to_csv('../Results/Exhaustive Search/Frequency Based/Thread_'+str(thread_no)+'.csv')
   return best_rule, best_CA_sill, better_score_list
 
 # %%
 #Replacing the data in table with encoding
-freq_data = frequency_encoding(data)
-enc = get_concatenated_string(freq_data)
-split_enc = split_string(enc, split=5)
-rule_list = get_rule_list()
-best_rule, best_CA_sill, better_score_list = cellular_automata_clustering(5, rule_list, split_enc)
+if __name__ == "__main__":
+  
+  freq_data = frequency_encoding(data)
+  enc = get_concatenated_string(freq_data)
+  split_enc = split_string(enc, split=5)
+  rule_list = get_rule_list()
+  rules_comb = list(combinations(rule_list, 2))
+  trials = int(sys.argv[2])
+  num_threads = int(sys.argv[1])
+  thread_pool = []
+  rules_comb = np.array(rules_comb)
+  print(type(rules_comb))
+  rules_sep = np.array_split(rules_comb,(num_threads))
+  print(len(rules_sep))
+  for t in range(num_threads):
+    print('Thread : ',t)
+
+    t1 = threading.Thread(target=cellular_automata_clustering, args=(5, rules_sep[t], split_enc, t, trials,))
+    t1.daemon = True
+    t1.start()
+    thread_pool.append(t1)
+  
+  for t in thread_pool:
+    t.join()
+
