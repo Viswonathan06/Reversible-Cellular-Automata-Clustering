@@ -411,9 +411,9 @@ if __name__ == "__main__":
   num_threads = int(sys.argv[1])
   thread_pool = []
   rules_comb = np.array(rules_comb)
-  print(type(rules_comb))
+  rules_comb = rules_comb[len(rules_comb)//2:]
+  print(len(rules_comb))
   rules_sep = np.array_split(rules_comb,(num_threads))
-  print(len(rules_sep))
   for t in range(num_threads):
     print('Thread : ',t)
 
