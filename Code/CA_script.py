@@ -206,14 +206,12 @@ def cellular_automata_clustering(split, rules_comb, encoding, thread_no, trials=
   for rule_set in rules_comb:
     tmc=[]
     tma=[]
-    print("Trial number :", rules)
-    rule_set=random.sample(rule_list,2)
-    #Clustering, checking scores 252702960
-    #rule_set=[252691440,2218767375]
-    # rule_set=[[1511938590,2218767375],[2276755335,1259293455],[2276755215,255652080]]
-    #rule_set=[[1511938590,2218767375]]
-    # rule_set=[267390795,267416079]
-    # rule_set=[256577355,259190799]
+    print("Trial number :", trial)
+    trial = trial+1
+    
+    if trial == trials:
+      break
+    
     print(rule_set)
     enc1 = copy.deepcopy(encoding)
     for p in range(int(len(rule_set)/2)):
@@ -378,6 +376,10 @@ def cellular_automata_clustering(split, rules_comb, encoding, thread_no, trials=
 
     # Add rto output data
     output_data.append([rule_set[0],rule_set[1],len(fa),tma[0][0],tma[0][1],len(t1),CA_sill_new,Kmeans_sill_new]) 
+    out_df = pd.DataFrame(data=output_data, columns=columns)
+    out_df.to_csv('../Results/Exhaustive Search/Entropy Based Hash/Thread_'+str(thread_no)+'.csv')
+
+
     print(tabulate(my_data, headers=head, tablefmt="grid"))
     p=[]
     for i in fa:
@@ -390,7 +392,8 @@ def cellular_automata_clustering(split, rules_comb, encoding, thread_no, trials=
 
     print(t1)
     print("---------------------***-----------------******----------------------***--------------------")
-
+  len(output_data)
+  # print(out_df.head())
   return best_rule, best_CA_sill, better_score_list
 
 # %%
@@ -399,6 +402,8 @@ if __name__ == "__main__":
   
   freq_data = frequency_encoding(data)
   enc = get_concatenated_string(freq_data)
+  enc = list(pd.read_csv('../Dataset/entropy_hashed_SDBdata.csv')['0'])
+
   split_enc = split_string(enc, split=5)
   rule_list = get_rule_list()
   rules_comb = list(combinations(rule_list, 2))
