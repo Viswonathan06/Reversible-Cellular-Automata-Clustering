@@ -206,12 +206,14 @@ def cellular_automata_clustering(split, rules_comb, encoding, thread_no, trials=
   for rule_set in rules_comb:
     tmc=[]
     tma=[]
-    print("Trial number :", trial)
-    trial = trial+1
-    
-    if trial == trials:
-      break
-    
+    print("Trial number :", rules)
+    rule_set=random.sample(rule_list,2)
+    #Clustering, checking scores 252702960
+    #rule_set=[252691440,2218767375]
+    # rule_set=[[1511938590,2218767375],[2276755335,1259293455],[2276755215,255652080]]
+    #rule_set=[[1511938590,2218767375]]
+    # rule_set=[267390795,267416079]
+    # rule_set=[256577355,259190799]
     print(rule_set)
     enc1 = copy.deepcopy(encoding)
     for p in range(int(len(rule_set)/2)):
@@ -388,10 +390,7 @@ def cellular_automata_clustering(split, rules_comb, encoding, thread_no, trials=
 
     print(t1)
     print("---------------------***-----------------******----------------------***--------------------")
-  len(output_data)
-  out_df = pd.DataFrame(data=output_data, columns=columns)
-  print(out_df.head())
-  out_df.to_csv('../Results/Exhaustive Search/Frequency Based/Thread_'+str(thread_no)+'.csv')
+
   return best_rule, best_CA_sill, better_score_list
 
 # %%
