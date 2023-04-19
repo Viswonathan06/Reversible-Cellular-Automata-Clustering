@@ -89,7 +89,7 @@ class RCAC:
 
   def get_rule_list(self, path="./rule_list.txt"):
       # check if best rules exist
-      best_path = './config/Best Rules/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_rules.txt'
+      best_path = './config/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_rules.txt'
       try:
         print("Found best configuration!")
         my_file = open(best_path, 'r')
@@ -373,7 +373,7 @@ class RCAC:
         self.best_so_far = best_score
         print("Best silhoutte score :", self.best_so_far)
         self.labels_ = enc_data_
-        with open('./config/Best Rules/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_rules.txt', 'w') as file1:
+        with open('./config/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_rules.txt', 'w') as file1:
           file1.write(str(best_rules[0])+"\n"+str(best_rules[1]))
 
       p=[]
@@ -400,7 +400,7 @@ class RCAC:
 
     rule_list_name = self.rule_kind+'_cycles_'+str(self.split_size)
     os.makedirs('./'+self.save_location+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/Final Clusters', exist_ok=True)
-    os.makedirs('./config/Best Rules/'+self.Dataset_name+'/Custers-'+str(self.num_clusters), exist_ok=True)
+    os.makedirs('./config/'+self.Dataset_name+'/Custers-'+str(self.num_clusters), exist_ok=True)
     
     self.data=pd.read_csv("./data/"+self.Dataset_name+".csv")
     self.data=self.data.dropna()
