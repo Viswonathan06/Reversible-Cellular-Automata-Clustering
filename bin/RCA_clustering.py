@@ -26,7 +26,7 @@ class RCAC:
     ## Make changes only in this section. Preferably don't change path
     ## The code will automatically make the directories if they don't exist.
 
-    self.save_location = '.temp/Class/'
+    self.save_location = '.temp/'
     self.trials = trials
     self.num_threads = num_threads
     self.labels_ = []
@@ -87,9 +87,9 @@ class RCAC:
 
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
-  def get_rule_list(self, path="../rule_list.txt"):
+  def get_rule_list(self, path="./rule_list.txt"):
       # check if best rules exist
-      best_path = '../config/Best Rules/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_rules.txt'
+      best_path = './config/Best Rules/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_rules.txt'
       try:
         print("Found best configuration!")
         my_file = open(best_path, 'r')
@@ -165,7 +165,7 @@ class RCAC:
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
   def aggregate_scores(self):
-    path = '../'+self.save_location+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'
+    path = './'+self.save_location+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'
     main_df = pd.DataFrame()
     for files in os.listdir(path):
         if '.DS_Store' in files or '.csv' not in files or 'final_scores' in files:
@@ -177,7 +177,7 @@ class RCAC:
     main_df.reset_index(inplace = True, drop=True)
     best_score = main_df['CA Silhoutte'].iloc[0]
     best_rules = [main_df['Rule 1'].iloc[0], main_df['Rule 2'].iloc[0]]
-    main_df.to_csv('../'+self.save_location+'/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_final_scores.csv')
+    main_df.to_csv('./'+self.save_location+'/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_final_scores.csv')
     return best_score, best_rules
 
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -358,22 +358,22 @@ class RCAC:
         Birch_new = 0
 
       if self.compare:
-        my_data=[[len(init_clusters),CA_sill_new,Heir_sill_new, Kmeans_sill_new, Birch_new]]
-        head=["Initial no.of clusters"," Our silhoutte score","Heirarchical", "Kmeans", "Birch"]
+        my_data=[[len(init_clusters),CA_sill_new,Heir_sill_new, Kmeans_sill_new]]
+        head=["Initial no.of clusters"," Our silhoutte score","Heirarchical", "Kmeans"]
         print(tabulate(my_data, headers=head, tablefmt="grid"))
       
       
       # Add rto output data
       output_data.append([rule_set[0],rule_set[1],len(init_clusters),CA_sill_new,Heir_sill_new, Kmeans_sill_new, Birch_new]) 
       out_df = pd.DataFrame(data=output_data, columns=columns)
-      out_df.to_csv('../'+self.save_location+'/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/best_'+str(self.split_index)+'_tr_'+str(thread_no)+'.csv')
+      out_df.to_csv('./'+self.save_location+'/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/best_'+str(self.split_index)+'_tr_'+str(thread_no)+'.csv')
       
       best_score, best_rules  = self.aggregate_scores()
       if self.best_so_far < best_score:
         self.best_so_far = best_score
         print("Best silhoutte score :", self.best_so_far)
         self.labels_ = enc_data_
-        with open('../config/Best Rules/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_rules.txt', 'w') as file1:
+        with open('./config/Best Rules/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_rules.txt', 'w') as file1:
           file1.write(str(best_rules[0])+"\n"+str(best_rules[1]))
 
       p=[]
@@ -399,21 +399,21 @@ class RCAC:
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
     rule_list_name = self.rule_kind+'_cycles_'+str(self.split_size)
-    os.makedirs('../'+self.save_location+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/Final Clusters', exist_ok=True)
-    os.makedirs('../config/Best Rules/'+self.Dataset_name+'/Custers-'+str(self.num_clusters), exist_ok=True)
+    os.makedirs('./'+self.save_location+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/Final Clusters', exist_ok=True)
+    os.makedirs('./config/Best Rules/'+self.Dataset_name+'/Custers-'+str(self.num_clusters), exist_ok=True)
     
-    self.data=pd.read_csv("../data/"+self.Dataset_name+".csv")
+    self.data=pd.read_csv("./data/"+self.Dataset_name+".csv")
     self.data=self.data.dropna()
     self.data=self.data.drop(self.data_drop_columns,axis=1)
     window_size = 5
     encoder = BiNCE(self.data, length_of_each=2)
     self.enc = encoder.encode()
-    # self.enc = pd.read_csv('../data/fixed_width_encoding_Iris.csv', dtype='str')
+    # self.enc = pd.read_csv('./data/fixed_width_encoding_Iris.csv', dtype='str')
     self.enc = list(self.enc[self.enc.columns[0]])
     # print(self.enc)
     
     split_enc, num_of_splits = self.split_string(self.enc,self.split_size)
-    rule_list = self.get_rule_list('../rules/'+rule_list_name+'.txt')
+    rule_list = self.get_rule_list('./rules/'+rule_list_name+'.txt')
     rules_comb = list(combinations(rule_list, 2))
     
     thread_pool = []
