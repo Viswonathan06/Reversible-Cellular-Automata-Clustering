@@ -18,11 +18,11 @@ import matplotlib.cm as cm
 from multiprocessing import Process
 from tabulate import tabulate
 import warnings
-from BiNCE_encoding import BiNCE
+from bin.BiNCE_encoding import BiNCE
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 class RCAC:
-  def __init__(self,Dataset_name,split_size,num_clusters,data_drop_columns, compare_with_others = False, trials = -1,num_threads = 4) -> None:
+  def __init__(self,Dataset_name,split_size,num_clusters,data_drop_columns, compare_with_others = False, trials = 10,num_threads = 4) -> None:
     ## Make changes only in this section. Preferably don't change path
     ## The code will automatically make the directories if they don't exist.
 
@@ -395,9 +395,6 @@ class RCAC:
 
   # Main function
   def fit(self):
-
-    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-
     rule_list_name = self.rule_kind+'_cycles_'+str(self.split_size)
     os.makedirs('./'+self.save_location+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/Final Clusters', exist_ok=True)
     os.makedirs('./config/'+self.Dataset_name+'/Custers-'+str(self.num_clusters), exist_ok=True)
