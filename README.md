@@ -1,6 +1,6 @@
-# Final-Year-Project
+# Open-Source and Improvised RCA-based Clustering
 
-This repository contains the files for the final year project on Cellular Automata for Group 8 
+This repository is contains an open-source, imrpovised Reversible Cellular Automata based clustering technique. 
 
 ---
 
@@ -10,5 +10,10 @@ This repository contains the files for the final year project on Cellular Automa
 
     ```pip install -r requirements.txt```
 
-2. Follow the instructions in the ```./Code``` directory
+2. The ```cluster.ipynb``` notebook contains the sample code for running the clustering technique. 
+
+3. Make sure your database is included in the ```data``` folder before clustering, as the function takes dataset name as input. 
+
+4. The function currently runs on 4 threads by default and runs 10 trails befoer showing the best results. 
+
 

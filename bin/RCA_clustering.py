@@ -7,7 +7,7 @@ import random as rand
 from itertools import combinations, permutations
 import pickle as pkl
 import threading 
-from sklearn.metrics import silhouette_score,calinski_harabasz_score,davies_bouldin_score
+from sklearn.metrics import silhouette_score,davies_bouldin_score,calinski_harabasz_score
 from sklearn.cluster import KMeans, Birch
 from sklearn import metrics         
 import copy 
@@ -16,9 +16,10 @@ from sklearn.metrics import silhouette_samples, silhouette_score
 from sklearn.cluster import AgglomerativeClustering
 import matplotlib.cm as cm
 from multiprocessing import Process
-from tabulate import tabulate
+from tabulate import tabulateimage.png
 import warnings
 from bin.BiNCE_encoding import BiNCE
+from bin.Frequency_based_encoding import freq_encoding
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 class RCAC:
@@ -348,7 +349,7 @@ class RCAC:
         Kmeans_sill_new = 0
 
       ## Birch 
-      clust_model = Birch(n_clusters=self.num_clusters,branching_factor=2000,threshold=2)
+      clust_model = Birch(n_clusters=self.num_clusters,branching_factor=1500,threshold=1.5)
       clust_model.fit(X)
       labels = clust_model.labels_
       try:
@@ -357,10 +358,6 @@ class RCAC:
         # print("Error:",e)
         Birch_new = 0
 
-      if self.compare:
-        my_data=[[len(init_clusters),CA_sill_new,Heir_sill_new, Kmeans_sill_new]]
-        head=["Initial no.of clusters"," Our silhoutte score","Heirarchical", "Kmeans"]
-        print(tabulate(my_data, headers=head, tablefmt="grid"))
       
       
       # Add rto output data
@@ -376,6 +373,10 @@ class RCAC:
         with open('./config/'+self.Dataset_name+'/Custers-'+str(self.num_clusters)+'/'+self.rule_kind+'_rules.txt', 'w') as file1:
           file1.write(str(best_rules[0])+"\n"+str(best_rules[1]))
 
+      if self.compare:
+        my_data=[[self.num_clusters,self.best_so_far,Heir_sill_new, Kmeans_sill_new, Birch_new]]
+        head=["Final no.of clusters"," Our silhoutte score","Heirarchical", "Kmeans", "Birch"]
+        print(tabulate(my_data, headers=head, tablefmt="grid"))
       p=[]
       for i in init_clusters:
         p.append(len(i))
@@ -405,9 +406,10 @@ class RCAC:
     window_size = 5
     encoder = BiNCE(self.data, length_of_each=2)
     self.enc = encoder.encode()
-    # self.enc = pd.read_csv('./data/fixed_width_encoding_Iris.csv', dtype='str')
+    # if you want to apply freq based encoding, 
+    # self.enc = freq_encoding(self.data)
     self.enc = list(self.enc[self.enc.columns[0]])
-    # print(self.enc)
+    print(self.enc)
     
     split_enc, num_of_splits = self.split_string(self.enc,self.split_size)
     rule_list = self.get_rule_list('./rules/'+rule_list_name+'.txt')
